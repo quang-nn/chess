@@ -6,7 +6,7 @@ import { Route, Switch } from 'react-router-dom';
 import Home from './pages/home';
 import Room from './pages/room';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { firebaseConfig } from './constants/firebaseConfig';
+import './App.scss';
 
 
 const App = () => {

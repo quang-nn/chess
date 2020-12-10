@@ -34,10 +34,11 @@ const Home = () => {
       </form>
       <div>
         <p>Available rooms:</p>
-
-        {rooms.map((val, key) => {
-          return <Link key={key} to={`rooms/${val.id}`}>{val.name} </Link>
-        })}
+        <ul>
+          {rooms.map((val, key) => {
+            return <li key={key}><Link to={`rooms/${val.id}`}>{val.name} </Link></li>
+          })}
+        </ul>
       </div>
     </div >
   );
