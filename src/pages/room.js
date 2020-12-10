@@ -6,7 +6,6 @@ import Game from '../canvas/game';
 
 const Room = () => {
   const params = useParams()
-  console.log(params);
   const [room, setRoom] = useState(null)
 
   useEffect(() => {
@@ -14,16 +13,17 @@ const Room = () => {
     var rooms = firestore.collection("rooms")
     rooms.doc(params.id).onSnapshot(res => {
       let room = { ...res.data(), id: res.id }
-      // console.log(room);
+      console.log(room);
       setRoom(room)
     })
+    // eslint-disable-next-line
   }, [])
 
-  if(!room) return <div>loading...</div>
+  if (!room) return <div>loading...</div>
   return (
     <div>
       this is room: {room.name} with id: {room.id} <br />
-      <Game />
+      <Game own={1} />
     </div>
   );
 };

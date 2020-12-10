@@ -39,7 +39,19 @@ export default class Chessboard {
     this.drawLine(ctx, 4 * l, 3 * l, 6 * l, l);
     this.drawLine(ctx, 4 * l, 8 * l, 6 * l, 10 * l);
     this.drawLine(ctx, 4 * l, 10 * l, 6 * l, 8 * l);
+
+    // draw stat pos
     this.drawStartPos()
+
+    // draw border
+    ctx.beginPath();
+    ctx.lineWidth = cfg.lineWidth * 2;
+    this.drawLine(ctx, l - 5, l - 5, 9 * l + 5, l - 5);
+    this.drawLine(ctx, l - 5, l - 5, l - 5, 10 * l + 5);
+    this.drawLine(ctx, l * 9 + 5, l * 10 + 5, 9 * l + 5, l - 5);
+    this.drawLine(ctx, l * 9 + 5, l * 10 + 5, l - 5, 10 * l + 5);
+    ctx.closePath();
+
   }
 
   drawStartPos() {

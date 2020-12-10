@@ -182,7 +182,7 @@ const initChessboard = () => {
     }
     state.push(row);
   }
-
+  console.log(state.length);
   initArr.forEach(chess => {
     putChess(chess);
   });
@@ -195,6 +195,7 @@ const putChess = (chess) => {
 }
 
 export const initState = () => {
-  initChessboard()
+  if (!state.length)
+    initChessboard()
   return state
 }

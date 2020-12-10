@@ -15,6 +15,8 @@ class Chess {
 
   drawCircle(ctx, x, y) {
     // draw circle
+    ctx.lineWidth = cfg.lineWidth;
+
     ctx.fillStyle = this.side === constants.sides.red ? cfg.colors.red : cfg.colors.black;
     ctx.strokeStyle = this.side === constants.sides.red ? cfg.fontColors.red : cfg.fontColors.black;
 
