@@ -21,13 +21,13 @@ class Chess {
     ctx.strokeStyle = this.side === constants.sides.red ? cfg.fontColors.red : cfg.fontColors.black;
 
     ctx.beginPath();
-    ctx.arc(x, y, cfg.chessSize , 0, Math.PI * 2, false);
+    ctx.arc(x, y, cfg.chessSize, 0, Math.PI * 2, false);
     ctx.stroke();
     ctx.fill();
     ctx.closePath();
 
     ctx.beginPath();
-    ctx.arc(x, y, cfg.chessSize - 3 , 0, Math.PI * 2, false);
+    ctx.arc(x, y, cfg.chessSize - 3, 0, Math.PI * 2, false);
     ctx.stroke();
     ctx.closePath();
   }
@@ -41,7 +41,24 @@ class Chess {
         : cfg.fontColors.black;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, x, y);
+    // fucking font
+    if (this.type === 4 && this.side === 1) {
+      ctx.beginPath();
+      ctx.font= '500 36px cwTeXKai, serif'
+      ctx.fillText("仃", x - 3, y);
+      ctx.fillText(this.text, x + 2, y);
+      ctx.fillText("仃", x - 3, y);
+      ctx.fillText(this.text, x + 2, y);
+      ctx.fillText("仃", x - 3, y);
+      ctx.fillText(this.text, x + 2, y);
+      ctx.fillText("仃", x - 3, y);
+      ctx.fillText(this.text, x + 2, y);
+      ctx.fillText("仃", x - 3, y);
+      ctx.fillText(this.text, x + 2, y);
+      ctx.closePath();
+    } else {
+      ctx.fillText(this.text, x, y);
+    }
   }
 }
 
@@ -168,7 +185,7 @@ class Horse extends Chess {
 class Chariot extends Chess {
   constructor(side, pos, type) {
     super(side, pos, type);
-    this.text = this.side === constants.sides.red ? '俥' : '車';
+    this.text = this.side === constants.sides.red ? '車' : '車'; //俥
   }
 
   getNextSteps(state) {

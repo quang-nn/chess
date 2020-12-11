@@ -23,6 +23,7 @@ const Room = () => {
   return (
     <div>
       this is room: {room.name} with id: {room.id} <br />
+      <p>name: {localStorage.getItem("name")}</p>
       <Game own={1} />
     </div>
   );

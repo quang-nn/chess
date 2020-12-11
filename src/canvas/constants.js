@@ -4,7 +4,7 @@ const cfg = {
     red: '#F3DDB8',
     black: '#F3DDB8'
   },
-  font: '26px SimHei, STHeiti',
+  font: 'bold 36px cwTeXKai, serif',
   fontColors: {
     red: 'red',
     black: '#0a3a0a'

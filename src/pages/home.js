@@ -11,6 +11,7 @@ const Home = () => {
   const onSubmit = (e) => {
     e.preventDefault()
     let name = e.target.name.value;
+    localStorage.setItem("name", name)
     let room = e.target.room.value;
     history.push(`/room/${room}`)
   }
