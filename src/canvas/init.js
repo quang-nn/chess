@@ -186,6 +186,8 @@ const initChessboard = () => {
   initArr.forEach(chess => {
     putChess(chess);
   });
+
+  return state
 }
 
 const putChess = (chess) => {
@@ -194,8 +196,10 @@ const putChess = (chess) => {
   state[chess.row][chess.col] = chess;
 }
 
-export const initState = () => {
-  if (!state.length)
-    initChessboard()
-  return state
-}
+// export const initState = () => {
+//   if (!state.length)
+//     initChessboard()
+//   return state
+// }
+
+export const initState = state.length ? state : initChessboard()

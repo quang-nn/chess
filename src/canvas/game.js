@@ -1,51 +1,71 @@
 import React, { useEffect, useRef, useState } from "react";
-import Chessboard from "./chessboard";
-import ChessManager from "./chessManager";
+import * as chessBoard from "./chessboard";
+import * as chessManager from "./chessManager";
 import { cfg, constants } from "./constants";
-import Controller from "./controller";
+import * as controller from "./controller";
 import { initState } from "./init";
 
 const Game = (props) => {
   const ctrlerRef = useRef()
   const chessRef = useRef()
   const boardRef = useRef()
-  const [state, setState] = useState(initState)
-  const [gameState, setGameState] = useState({ isSelecting: false, selectingChess: null, from: null, to: null })
+  // const [state, setState] = useState(initState)
+  const {state, gameState, updateGameState} = props
+  // const [gameState, setGameState] = useState({ isSelecting: false, selectingChess: null, from: null, to: null })
   const [unit, setUnit] = useState(66)
 
-  const onclick = async (e) => {
+  const onclick = (e) => {
     const { isSelecting, selectingChess } = gameState
     let { r, c } = getClickedPos(e);
+
     // if not clicked on a chess point, return
     if (r < 0 || c < 0 || c > 8 || r > 9) {
       return;
     }
 
     let chess = lookup(r, c);
+    console.log(chess);
     if (chess) {
-      if (chess.side === props.own) {
-        await setGameState(prev => ({ ...prev, isSelecting: true, selectingChess: chess, from: { x: c, y: r }, to: null }))
-      } else {
+      if (chess.side === gameState.turn) {
+        if (chess === selectingChess) {
+          updateGameState(prev => ({ ...prev, isSelecting: false, selectingChess: null }))
+        }
+        else {
+          updateGameState(prev => ({ ...prev, isSelecting: true, selectingChess: chess }))
+        }
+      }
+      else {
         if (isSelecting) {
           moveChess(r, c, selectingChess)
         }
       }
-    } else {
+    }
+    else {
       if (isSelecting) {
         moveChess(r, c, selectingChess)
       }
     }
+  }
 
+  const isValidNext = (nextStep, next) => {
+    return nextStep.some(e => (e.row === next.row && e.col === next.col));
   }
 
   const moveChess = (r, c, chess) => {
+    let nextStep = chess.getNextSteps(state)
+    let next = { row: r, col: c }
+
+    if (!isValidNext(nextStep, next))
+      return
+
+    let old = { ...chess }
     let newState = [...state]
     newState[chess.row][chess.col] = null
     newState[r][c] = chess
     chess.row = r
     chess.col = c
-    setState(newState)
-    setGameState(gameState => ({ ...gameState, isSelecting: false, selectingChess: null, to: { x: c, y: r } }))
+    props.updateState(newState)
+    updateGameState(gameState => ({ ...gameState, isSelecting: false, selectingChess: null, from: { x: old.col, y: old.row }, to: { x: c, y: r } }))
   }
 
   const lookup = (r, c) => {
@@ -53,8 +73,11 @@ const Game = (props) => {
   }
 
   const getClickedPos = (e) => {
-    const x = e.pageX - ctrlerRef.current.offsetLeft;
-    const y = e.pageY - ctrlerRef.current.offsetTop;
+    // const x = e.pageX - ctrlerRef.current.offsetLeft;
+    // const y = e.pageY - ctrlerRef.current.offsetTop;
+
+    const x = e.nativeEvent.offsetX
+    const y = e.nativeEvent.offsetY
 
     const nx = Math.round(x / unit);
     const ny = Math.round(y / unit);
@@ -65,38 +88,40 @@ const Game = (props) => {
   }
 
   useEffect(() => {
+    const ctrlerCtx = ctrlerRef.current.getContext('2d');
+    ctrlerCtx.canvas.height = unit * 11
+    ctrlerCtx.canvas.width = unit * 10
+
+    const chessCtx = chessRef.current.getContext('2d');
+
+    chessCtx.canvas.height = unit * 11
+    chessCtx.canvas.width = unit * 10
     const boardCtx = boardRef.current.getContext('2d');
 
     boardCtx.canvas.height = unit * 11
     boardCtx.canvas.width = unit * 10
 
-    const chessBoard = new Chessboard(boardCtx, unit)
-    chessBoard.render();
+    chessBoard.drawBoard(boardCtx, unit);
   }, [])
 
   useEffect(() => {
     const chessCtx = chessRef.current.getContext('2d');
 
-    chessCtx.canvas.height = unit * 11
-    chessCtx.canvas.width = unit * 10
-
-    const chessManager = new ChessManager(chessCtx, unit, state)
-    chessManager.render()
+    chessManager.clear(chessCtx)
+    chessManager.drawChess(chessCtx, unit, state)
   }, [state])
 
   useEffect(() => {
-    const { isSelecting, selectingChess, from, to } = gameState
     const ctrlerCtx = ctrlerRef.current.getContext('2d');
-    ctrlerCtx.canvas.height = unit * 11
-    ctrlerCtx.canvas.width = unit * 10
+    const { isSelecting, selectingChess, from, to } = gameState
 
-    const controller = new Controller(ctrlerCtx, unit, state)
-    if (from && to) {
-      console.log(from, to);
-      controller.drawState(from, to)
-    }
+    controller.clear(ctrlerCtx)
+
     if (isSelecting)
-      controller.drawSelecting(selectingChess)
+      controller.drawSelecting(ctrlerCtx, unit, selectingChess)
+    if (from && to) {
+      controller.drawState(ctrlerCtx, unit, from, to)
+    }
   }, [gameState])
 
   return (

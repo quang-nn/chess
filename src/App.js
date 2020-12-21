@@ -1,46 +1,46 @@
 import firebase from './firebase/firebase';
 import "firebase/database";
 import "firebase/firestore";
-import { useEffect, useRef } from 'react';
+import "firebase/auth";
+import { useContext, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Home from './pages/home';
 import Room from './pages/room';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { StoreContext } from "./store/store";
 import './App.scss';
 
-
 const App = () => {
-  const inputRef = useRef();
-
-  const but = () => {
-    console.log(inputRef.current.value);
-    // initModel()
-    // var roomListRef = firebase.database().ref("rooms")
-    // var newRoomRef = roomListRef.push();
-    // newRoomRef.set({
-    //   username: "my name"
-    // });
-  }
-  const onSubmit = (e) => {
-    e.preventDefault()
-    console.log(e.target.name.value);
-    console.log(e.target.room.value);
-  }
-
-  const initModel = () => {
-    const firestore = firebase.firestore()
-    var rooms = firestore.collection("rooms")
-    var users = firestore.collection("users")
-
-    rooms.doc().set({ active: true, userIds: [] })
-    users.doc().set({ active: true })
-  }
+  const userReducer = useContext(StoreContext).userReducer
 
   useEffect(() => {
-    // if (!firebase.apps.length) {
-    //   firebase.initializeApp(firebaseConfig)
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log(user);
+        let cruser = {
+          id: user.uid,
+          name: user.displayName
+        }
+        userReducer.dispatch({ type: 'set_user', payload: cruser })
+        console.log("login");
+      } else {
+        userReducer.dispatch({ type: 'remove_user' })
+        console.log("sign out");
+      }
+    })
+
+    // let cruser = getCurrentUser()
+    // if (cruser) {
+    //   userReducer.dispatch({ type: 'set_user', payload: cruser })
+    //   const database = firebase.database()
+
+    //   database.ref('users/' + cruser.id).onDisconnect()
+    //     .set({ ...cruser, online: false })
+    //     .then(() => {
+    //       database.ref('users/' + cruser.id).set({ ...cruser, online: true })
+    //     })
+    // } else {
+    //   localStorage.removeItem("user")
     // }
-    // eslint-disable-next-line
   }, [])
 
   return (

@@ -1,15 +1,21 @@
-.canvas {
-  position: absolute;
+.canvas-container {
 
+}
+
+.canvas {
+  
   &-controller {
+    position: absolute;
     z-index: 3;
   }
 
-  &-chess{
+  &-chess {
+    position: absolute;
     z-index: 2;
   }
 
-  &-board{
+  &-board {
     z-index: 1;
+    position: relative;
   }
 }
