@@ -21,7 +21,7 @@ const App = () => {
           name: user.displayName
         }
         userReducer.dispatch({ type: 'set_user', payload: cruser })
-        console.log("login1");
+        console.log("login11");
       } else {
         userReducer.dispatch({ type: 'remove_user' })
         console.log("sign out");
